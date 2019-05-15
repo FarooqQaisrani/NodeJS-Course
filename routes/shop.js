@@ -6,6 +6,9 @@ const productsConteroller = require('../controllers/products');
 
 const router = express.Router();
 
-router.get('/', productsConteroller.getProducts);
+router.get('/', productsConteroller.getHome);
+router.get('/products', productsConteroller.getProducts);
+router.get('/product-detail', productsConteroller.getProductDetail);
+router.get('/cart', productsConteroller.getCart);
 
 module.exports = router;
