@@ -15,6 +15,10 @@
             </li>
 
             <li class="main-header__item">
+                <a class="<%= (locals.path != null) ? path === '/orders' ? 'active' : '' : ''%>" href="/orders">Orders</a>
+            </li>
+
+            <li class="main-header__item">
                 <a class="<%= (locals.path != null) ? path === '/admin/add-product' ? 'active' : '' : '' %>" href="/admin/add-product">Add Product</a>
             </li>
 

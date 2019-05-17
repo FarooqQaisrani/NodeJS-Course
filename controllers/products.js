@@ -1,13 +1,26 @@
 const Product = require('../models/product');
 
 
+// exports.getAdminProducts = (req, res, next) => {
+//   res.render('admin/products', {
+//     pageTitle: 'Add Product',
+//     path: '/admin/products',
+//     formsCSS: true,
+//     productCSS: true,
+//     activeAddProduct: true
+//   });
+// };
+
 exports.getAdminProducts = (req, res, next) => {
-  res.render('admin/products', {
-    pageTitle: 'Add Product',
-    path: '/admin/products',
-    formsCSS: true,
-    productCSS: true,
-    activeAddProduct: true
+  Product.fetchAll((products)=> {
+    res.render('admin/products', {
+      prods: products,
+      pageTitle: 'Shop',
+      path: '/admin/products',
+      hasProducts: products.length > 0,
+      activeShop: true,
+      productCSS: true
+    });
   });
 };
 
@@ -73,14 +86,22 @@ exports.getProductDetail = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  Product.fetchAll((products)=> {
-    res.render('shop/cart', {
-      prods: products,
-      pageTitle: 'Shop',
-      path: '/cart',
-      hasProducts: products.length > 0,
-      activeShop: true,
-      productCSS: true
-    });
+  res.render('shop/cart', {
+    pageTitle: 'Your Cart',
+    path: '/cart',
+  });
+};
+
+exports.getOrders = (req, res, next) => {
+  res.render('shop/orders', {
+    pageTitle: 'Your Orders',
+    path: '/orders',
+  });
+};
+
+exports.getCheckout = (req, res, next) => {
+  res.render('shop/checkout', {
+    pageTitle: 'Checkout',
+    path: '/checkout',
   });
 };
