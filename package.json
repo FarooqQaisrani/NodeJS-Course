@@ -5,13 +5,17 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js",
-    "start-server": "node app.js"
+    "start": "gulp",
+    "start-server": "node app.js",
+    "dev": "gulp"
   },
   "author": "Maximilian Schwarzmüller",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^1.18.3"
+    "browser-sync": "^2.14.0",
+    "del": "^2.2.2",
+    "gulp": "4.0.2",
+    "gulp-nodemon": "^2.1.0"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
