@@ -1,0 +1,26 @@
+
+version: '3.1'
+
+services:
+
+  mysql_inst:
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+     - 8083:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      # MYSQL_DATABASE: myDb
+
+  myadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    environment:
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: "root"
+    links:
+      - "mysql_inst:db"
+    ports:
+      - 8081:80
