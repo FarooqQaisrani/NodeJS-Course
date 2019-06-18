@@ -15,7 +15,8 @@ const Sequelize = require('sequelize');
 const sequqlize = new Sequelize('node-complete', 'root', 'root', {
     dialect: 'mysql',
     host: 'localhost',
-    port: '8083'
+    port: '8083',
+    logging: false
 });
 
 module.exports = sequqlize;

@@ -12,10 +12,12 @@
   "author": "Maximilian Schwarzmüller",
   "license": "ISC",
   "devDependencies": {
-    "browser-sync": "^2.14.0",
+    "browser-sync": "^2.26.7",
     "del": "^2.2.2",
+    "eslint": "^5.16.0",
     "gulp": "4.0.2",
-    "gulp-nodemon": "^2.1.0"
+    "gulp-nodemon": "^2.1.0",
+    "prettier": "1.18.2"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
