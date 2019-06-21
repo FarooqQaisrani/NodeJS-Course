@@ -5,14 +5,28 @@
 <%- include('../includes/navigation.ejs') %>
 <main class="centered">
 
-    <h1><%= product.title %></h1>
-    <hr>
-    <div>
-        <img src="<%= product.imageUrl%>" alt="<%= product.title %>"  style="max-width: 200px">
-    </div>
+    <% if (product) { %>
+        <article class="card product-item">
+            <header class="card__header">
+                <h1 class="product__title">
+                    <%= product.title %>
+                </h1>
+            </header>
+            <div class="card__image">
+<!--                <img src="<%= product.imageUrl %>" alt="<%= product.title %>">-->
+            </div>
+            <div class="card__content">
+                <h2 class="product__price">$
+                    <%= product.price %>
+                </h2>
+                <p class="product__description">
+                    <%= product.description %>
+                </p>
+            </div>
+        </article>
+    <% }%>
 
-    <h2><%= product.price %></h2>
-    <p><%= product.description %></p>
+
 
     <%- include('../includes/add-to-cart.ejs', {product: product}) %>
 
