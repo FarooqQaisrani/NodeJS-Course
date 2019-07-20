@@ -7,6 +7,8 @@ const session = require('express-session');
 var cookieParser = require('cookie-parser');
 // initalize sequelize with session store
 let SequelizeStore = require('connect-session-sequelize')(session.Store);
+const csrf = require("csurf");
+const flash = require("connect-flash");
 
 
 const errorController = require("./controllers/error");
@@ -18,6 +20,7 @@ const Order = require("./models/order");
 const OrderItem = require("./models/order-item");
 
 const app = express();
+const csrfProtection = csrf();
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -44,6 +47,9 @@ app.use(session({
   // saveUninitialized: true
 }));
 
+app.use(csrfProtection);
+app.use(flash());
+
 app.use((req, res, next) => {
 
   // const user = new User(req.session.user);
@@ -64,6 +70,12 @@ app.use((req, res, next) => {
   // next();
 
 
+});
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 app.use("/admin", adminRoutes);
@@ -91,7 +103,7 @@ sequelize
   // })
   // .then(user => {
   //   if (!user) {
-  //     return User.create({ name: "Max", email: "test@test.com" });
+  //     return User.create({ name: "Max", email: "asd@asd.com", password: 'asd' });
   //   }
   //   return Promise.resolve(user);
   // })
