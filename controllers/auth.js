@@ -1,17 +1,11 @@
+const crypto = require('crypto');
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
-const sendgridTransport = require("nodemailer-sendgrid-transport");
+const mailtrap = require("../config/apiKeys.js");
 
 const User = require("../models/user");
 
-const transporter = nodemailer.createTransport(
-  sendgridTransport({
-    auth: {
-      api_key:
-        "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"
-    }
-  })
-);
+const transporter = nodemailer.createTransport(mailtrap);
 
 exports.getLogin = (req, res, next) => {
   let Cookies = req.get("Cookie").split(";");
@@ -157,16 +151,43 @@ exports.postSignup = (req, res, next) => {
           .then(result => {
             res.redirect("/login");
 
-            // return transporter
-            //   .sendMail({
-            //     to: "farooqqaisrani@outlook.com",
-            //     from: "shop@node-complete.com",
-            //     subject: "Signup succeeded!",
-            //     html: `<h1>You successfully signed up!</h1>`
-            //   })
-            //   .catch(err => console.log(err));
+            const mailOptions = {
+              from: '"Node Shop" <shop@node-complete.com>',
+              to: email,
+              subject: "Signup succeeded!",
+              html: `<h1>You successfully signed up!</h1>`
+            };
+
+            return transporter.sendMail(mailOptions, (err, info) => {
+              if (err) {
+                console.log(err);
+                return next(err);
+              }
+              // console.log("Info: ", info);
+              res.json({
+                message: "Email successfully sent."
+              });
+            });
           });
       }
     })
     .catch(err => console.log(err));
+};
+
+exports.getReset = (req, res, next) => {
+  res.render("auth/reset", {
+    path: "/reset",
+    pageTitle: "Reset Password",
+    errorMessage: req.flash("error")
+  });
+};
+
+exports.postReset = (req, res, next) => {
+  crypto.randomBytes(32, (err, buffer) => {
+    if(err){
+      console.log(err);
+      return res.redirect('/reset');
+    }
+    const token = buffer.toString('hex');
+  });
 };
