@@ -10,9 +10,23 @@ module.exports = {
         allowNull: true,
         after: "password"
       }
+    ).then(
+      ()=> {
+        queryInterface.addColumn(
+          'users',
+          'resetTokenExpiration',
+          {
+            type: Sequelize.DATE,
+            allowNull: true,
+            after: "resetToken"
+          }
+        )
+      }
     )
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.removeColumn('users', 'resetToken')
+    return queryInterface.removeColumn('users', 'resetToken').then(() => {
+      queryInterface.removeColumn('users', 'resetTokenExpiration')
+    })
   }
 };
