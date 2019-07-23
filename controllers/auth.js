@@ -3,6 +3,8 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const mailtrap = require("../config/apiKeys.js");
 
+const { validationResult } = require("express-validator");
+
 const User = require("../models/user");
 
 const transporter = nodemailer.createTransport(mailtrap);
@@ -116,6 +118,15 @@ exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors);
+    return res.status(422).render("auth/signup", {
+      path: "/signup",
+      pageTitle: "Signup",
+      errorMessage: errors.array()[0].msg
+    });
+  }
 
   User.findOne({
     where: {
