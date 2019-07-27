@@ -13,7 +13,9 @@
         <form class="login-form" action="/login" method="POST">
             <div class="form-control">
                 <label for="email">E-Mail</label>
-                <input type="email" name="email" id="email">
+                <input
+                        class="<%= (locals.validationErrors) ? validationErrors.find(e => e.param === 'email') ? 'invalid' : '' : '' %>"
+                        type="email" name="email" id="email" value= <%= (locals.oldInput) ? oldInput.email : '' %>>
             </div>
             <div class="form-control">
                 <label for="password">Password</label>
