@@ -3,13 +3,12 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const sequelize = require("./util/database");
-const session = require('express-session');
-var cookieParser = require('cookie-parser');
+const session = require("express-session");
+var cookieParser = require("cookie-parser");
 // initalize sequelize with session store
-let SequelizeStore = require('connect-session-sequelize')(session.Store);
+let SequelizeStore = require("connect-session-sequelize")(session.Store);
 const csrf = require("csurf");
 const flash = require("connect-flash");
-
 
 const errorController = require("./controllers/error");
 const Product = require("./models/product");
@@ -36,41 +35,21 @@ app.set("views", path.join(__dirname, "/dist/views"));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/dist/public"));
 // app.use(session({secret: 'mysecret', resave: false, saveUninitialized: false}));
-app.use(cookieParser())
-app.use(session({
-  secret: 'keyboard cat',
-  store: new SequelizeStore({
-    db: sequelize
-  }),
-  resave: false, // we support the touch method so per the express-session docs this should be set to false
-  proxy: true ,// if you do SSL outside of node.
-  // saveUninitialized: true
-}));
+app.use(cookieParser());
+app.use(
+  session({
+    secret: "keyboard cat",
+    store: new SequelizeStore({
+      db: sequelize
+    }),
+    resave: false, // we support the touch method so per the express-session docs this should be set to false
+    proxy: true // if you do SSL outside of node.
+    // saveUninitialized: true
+  })
+);
 
 app.use(csrfProtection);
 app.use(flash());
-
-app.use((req, res, next) => {
-
-  // const user = new User(req.session.user);
-  if(req.session.user != null){
-    User.findByPk(req.session.user.id)
-      .then(user => {
-        req.user = user;
-        next();
-      })
-      .catch(err => console.log(err));
-  }
-  else {
-    next();
-  }
-
-  //
-  // req.user = user;
-  // next();
-
-
-});
 
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
@@ -78,11 +57,47 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  // const user = new User(req.session.user);
+  if (req.session.user != null) {
+    User.findByPk(req.session.user.id)
+      .then(user => {
+        if (!user) {
+          return next();
+        }
+        req.user = user;
+        next();
+      })
+      .catch(err => {
+        next(new Error(err));
+      });
+  } else {
+    next();
+  }
+
+  //
+  // req.user = user;
+  // next();
+});
+
+
+
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+app.get("/500", errorController.get500);
+
 app.use(errorController.get404);
+
+app.use((error, req, res, next) => {
+  res
+    .status(500)
+    .render("500", {
+      pageTitle: "Error!",
+      path: "/500"
+    });
+});
 
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product);
@@ -92,8 +107,7 @@ Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 Order.belongsTo(User);
 User.hasMany(Order);
-Order.belongsToMany(Product, {through: OrderItem});
-
+Order.belongsToMany(Product, { through: OrderItem });
 
 sequelize
   // .sync({force: true})

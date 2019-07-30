@@ -46,7 +46,12 @@ exports.postAddProduct = (req, res, next) => {
       // console.log("Created Product");
       res.redirect("/admin/products");
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      // res.redirect('/500');
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      throw next(error);
+    });
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -72,7 +77,12 @@ exports.getEditProduct = (req, res, next) => {
         errorMessage: null
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      // res.redirect('/500');
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      throw next(error);
+    });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -101,7 +111,6 @@ exports.postEditProduct = (req, res, next) => {
     });
   }
 
-
   Product.findByPk(prodId)
     .then(product => {
       // console.log('----------------------------');
@@ -119,7 +128,12 @@ exports.postEditProduct = (req, res, next) => {
         res.redirect("/admin/products");
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      // res.redirect('/500');
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      throw next(error);
+    });
 };
 
 exports.getProducts = (req, res, next) => {
@@ -132,7 +146,12 @@ exports.getProducts = (req, res, next) => {
         path: "/admin/products"
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      // res.redirect('/500');
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      throw next(error);
+    });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -147,5 +166,10 @@ exports.postDeleteProduct = (req, res, next) => {
       // console.log("DESTRYOED PRODUCT");
       res.redirect("/admin/products");
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      // res.redirect('/500');
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      throw next(error);
+    });
 };

@@ -107,7 +107,12 @@ exports.postLogin = (req, res, next) => {
           });
       }
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      // res.redirect('/500');
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      throw next(error);
+    });
 
   // User.findByPk(1)
   //   .then(user => {
@@ -185,7 +190,12 @@ exports.postSignup = (req, res, next) => {
       });
     })
 
-    .catch(err => console.log(err));
+    .catch(err => {
+      // res.redirect('/500');
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      throw next(error);
+    });
 };
 
 exports.getReset = (req, res, next) => {
@@ -241,7 +251,12 @@ exports.postReset = (req, res, next) => {
           });
         });
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        // res.redirect('/500');
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        throw next(error);
+      });
   });
 };
 
@@ -265,7 +280,12 @@ exports.getNewPassword = (req, res, next) => {
         passwordToken: token
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      // res.redirect('/500');
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      throw next(error);
+    });
 };
 
 exports.postNewPassword = (req, res, next) => {
@@ -295,6 +315,9 @@ exports.postNewPassword = (req, res, next) => {
       res.redirect("/login");
     })
     .catch(err => {
-      console.log(err);
+      // res.redirect('/500');
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      throw next(error);
     });
 };
