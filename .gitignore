@@ -3,3 +3,5 @@ node_modules
 dist
 mysql
 package-lock.json
+images/
+data/invoices/

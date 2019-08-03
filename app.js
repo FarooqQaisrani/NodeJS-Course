@@ -9,6 +9,7 @@ var cookieParser = require("cookie-parser");
 let SequelizeStore = require("connect-session-sequelize")(session.Store);
 const csrf = require("csurf");
 const flash = require("connect-flash");
+const multer = require("multer");
 
 const errorController = require("./controllers/error");
 const Product = require("./models/product");
@@ -21,6 +22,29 @@ const OrderItem = require("./models/order-item");
 const app = express();
 const csrfProtection = csrf();
 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    const _filename =
+      new Date().toISOString() + "-" + file.originalname.replace(/\s/g, "-");
+    cb(null, _filename.toLowerCase());
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 app.set("view engine", "ejs");
 app.set("views", "views");
 
@@ -29,7 +53,11 @@ const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.set("views", path.join(__dirname, "/dist/views"));
 app.set("view engine", "ejs");
@@ -80,8 +108,6 @@ app.use((req, res, next) => {
   // next();
 });
 
-
-
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
@@ -91,12 +117,10 @@ app.get("/500", errorController.get500);
 app.use(errorController.get404);
 
 app.use((error, req, res, next) => {
-  res
-    .status(500)
-    .render("500", {
-      pageTitle: "Error!",
-      path: "/500"
-    });
+  res.status(500).render("500", {
+    pageTitle: "Error!",
+    path: "/500"
+  });
 });
 
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });

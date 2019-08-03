@@ -20,7 +20,6 @@ router.post(
       .isString()
       .isLength({ min: 3 })
       .trim(),
-    body("imageUrl").isURL(),
     body("price").isFloat(),
     body("description")
       .isLength({ min: 5, max: 400 })
@@ -38,7 +37,6 @@ router.post(
       .isString()
       .isLength({ min: 3 })
       .trim(),
-    body("imageUrl", "imageUrl").isURL(),
     body("price", "price").isFloat(),
     body("description", "description")
       .isLength({ min: 5, max: 400 })
